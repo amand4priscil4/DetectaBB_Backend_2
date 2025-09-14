@@ -1,4 +1,3 @@
-# app/services/crypto_service.py
 from cryptography.fernet import Fernet
 import os
 import secrets

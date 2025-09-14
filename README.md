@@ -144,12 +144,3 @@ O sistema inclui funcionalidades de XAI que permitem:
 
 Este projeto está licenciado sob a [MIT License](LICENSE).
 
-## Autores
-
-- **Amanda Priscila** - Desenvolvimento principal - [@amand4priscil4](https://github.com/amand4priscil4)
-
-- GitHub: [@amand4priscil4](https://github.com/amand4priscil4)
-
----
-
-**Se este projeto foi útil para você, considere dar uma estrela no repositório!**

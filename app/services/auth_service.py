@@ -1,4 +1,3 @@
-# app/services/auth_service.py
 import bcrypt
 from datetime import datetime, timedelta
 import redis

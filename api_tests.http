@@ -1,0 +1,47 @@
+### Teste Health Check
+GET http://localhost:5000/api/health
+
+### Ver Estatísticas
+GET http://localhost:5000/api/stats
+
+### Ver Histórico
+GET http://localhost:5000/api/history
+
+### Analisar Boleto - Banco do Brasil
+POST http://localhost:5000/api/analyze
+Content-Type: application/json
+
+{
+  "banco": "Banco do Brasil",
+  "codigo_banco": 1,
+  "agencia": 1234,
+  "valor": 1000.50,
+  "linha_digitavel": "00190000090012345678901234567890"
+}
+
+### Analisar Boleto - Itaú
+POST http://localhost:5000/api/analyze
+Content-Type: application/json
+
+{
+  "banco": "Itaú",
+  "codigo_banco": 341,
+  "agencia": 5678,
+  "valor": 2500.75,
+  "linha_digitavel": "34191234567890123456789012345678901"
+}
+
+### Analisar Boleto - Santander
+POST http://localhost:5000/api/analyze
+Content-Type: application/json
+
+{
+  "banco": "Santander",
+  "codigo_banco": 33,
+  "agencia": 9999,
+  "valor": 15000.00,
+  "linha_digitavel": "03399876543210987654321098765432109"
+}
+
+### Ver análise específica
+GET http://localhost:5000/api/analysis/1

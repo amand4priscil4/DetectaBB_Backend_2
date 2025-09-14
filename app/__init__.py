@@ -19,12 +19,11 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
     # Configurar CORS
-   # Configuração segura
-CORS(app, 
-     resources={r"/*": {"origins": ["http://localhost:3000", "http://localhost:8100", "https://seu-frontend"]}},
-     supports_credentials=True,
-     allow_headers=["Content-Type", "Authorization"],
-     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+    CORS(app, 
+         resources={r"/*": {"origins": ["http://localhost:3000", "http://localhost:8100", "https://seu-frontend.vercel.app"]}},
+         supports_credentials=True,
+         allow_headers=["Content-Type", "Authorization"],
+         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
     
     # Inicializar extensões
     db.init_app(app)

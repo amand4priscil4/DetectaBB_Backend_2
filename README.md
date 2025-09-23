@@ -140,7 +140,3 @@ O sistema inclui funcionalidades de XAI que permitem:
 - **Relatórios Interpretativos**: Gera explicações em linguagem natural
 
 
-## Licença
-
-Este projeto está licenciado sob a [MIT License](LICENSE).
-

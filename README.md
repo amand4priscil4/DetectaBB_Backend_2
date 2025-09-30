@@ -10,11 +10,11 @@ O **Detector de Boletos** é uma solução desenvolvida para identificar e anali
 
 ## Funcionalidades
 
-- ✅ **Detecção Automática**: Identifica boletos em documentos de forma automática
-- 🤖 **Machine Learning**: Utiliza modelos treinados para alta precisão
-- 🔍 **Explainable AI (XAI)**: Fornece explicações sobre as decisões do modelo
-- 📄 **Análise de Documentos**: Processa diferentes formatos de documentos
-- 🎯 **Alta Precisão**: Sistema otimizado para reduzir falsos positivos/negativos
+-  **Detecção Automática**: Identifica boletos em documentos de forma automática
+-  **Machine Learning**: Utiliza modelos treinados para alta precisão
+-  **Explainable AI (XAI)**: Fornece explicações sobre as decisões do modelo
+-  **Análise de Documentos**: Processa diferentes formatos de documentos
+-  **Alta Precisão**: Sistema otimizado para reduzir falsos positivos/negativos
 
 ## Tecnologias Utilizadas
 
@@ -46,7 +46,7 @@ detecta-boletos/
 └── README.md                             # Este arquivo
 ```
 
-## 🚀 Instalação
+##  Instalação
 
 ### Pré-requisitos
 
@@ -86,7 +86,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## 💻 Como Usar
+##  Como Usar
 
 ### 1. Treinamento do Modelo
 
@@ -126,7 +126,7 @@ print(f"Precisão: {metricas['precision']:.2f}")
 print(f"Recall: {metricas['recall']:.2f}")
 ```
 
-## 📊 Performance
+##  Performance
 
 | Métrica | Valor |
 |---------|-------|

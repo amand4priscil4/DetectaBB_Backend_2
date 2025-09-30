@@ -14,10 +14,16 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///detecta_boletos.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
-    CORS(app)
+    # CORS mais específico
+    CORS(app, 
+         resources={r"/*": {
+             "origins": ["http://localhost:8100", "http://localhost:3000"],
+             "allow_headers": ["Content-Type", "Authorization"],
+             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+         }})
+    
     db.init_app(app)
     
-    # Rotas básicas que sabemos que funcionam
     @app.route('/')
     def home():
         return {

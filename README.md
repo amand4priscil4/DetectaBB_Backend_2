@@ -2,17 +2,19 @@
 
 Sistema inteligente para detecção e análise de boletos bancários utilizando técnicas de Machine Learning e Explainable AI (XAI).
 
+> **Nota:** Este projeto é uma continuidade do [detectaBB_backend](https://github.com/Matheuscroft/detectaBB_backend), focando na implementação de modelos de Machine Learning com explicabilidade.
+
 ## Descrição
 
 O **Detector de Boletos** é uma solução desenvolvida para identificar e analisar automaticamente boletos bancários em documentos digitais. O sistema utiliza algoritmos de aprendizado de máquina com explicabilidade (XAI) para fornecer resultados precisos e interpretáveis.
 
 ## Funcionalidades
 
--  **Detecção Automática**: Identifica boletos em documentos de forma automática
--  **Machine Learning**: Utiliza modelos treinados para alta precisão
--  **Explainable AI (XAI)**: Fornece explicações sobre as decisões do modelo
--  **Análise de Documentos**: Processa diferentes formatos de documentos
--  **Alta Precisão**: Sistema otimizado para reduzir falsos positivos/negativos
+- ✅ **Detecção Automática**: Identifica boletos em documentos de forma automática
+- 🤖 **Machine Learning**: Utiliza modelos treinados para alta precisão
+- 🔍 **Explainable AI (XAI)**: Fornece explicações sobre as decisões do modelo
+- 📄 **Análise de Documentos**: Processa diferentes formatos de documentos
+- 🎯 **Alta Precisão**: Sistema otimizado para reduzir falsos positivos/negativos
 
 ## Tecnologias Utilizadas
 
@@ -44,7 +46,7 @@ detecta-boletos/
 └── README.md                             # Este arquivo
 ```
 
-##  Instalação
+## 🚀 Instalação
 
 ### Pré-requisitos
 
@@ -54,12 +56,14 @@ detecta-boletos/
 ### Passos para instalação
 
 1. **Clone o repositório:**
+
 ```bash
 git clone https://github.com/amand4priscil4/Detector-boletos.git
 cd Detector-boletos
 ```
 
 2. **Crie um ambiente virtual:**
+
 ```bash
 python -m venv venv
 ```
@@ -77,11 +81,12 @@ source venv/bin/activate
 ```
 
 4. **Instale as dependências:**
+
 ```bash
 pip install -r requirements.txt
 ```
 
-##  Como Usar
+## 💻 Como Usar
 
 ### 1. Treinamento do Modelo
 
@@ -121,7 +126,7 @@ print(f"Precisão: {metricas['precision']:.2f}")
 print(f"Recall: {metricas['recall']:.2f}")
 ```
 
-## Performance
+## 📊 Performance
 
 | Métrica | Valor |
 |---------|-------|
@@ -130,7 +135,7 @@ print(f"Recall: {metricas['recall']:.2f}")
 | Recall | 96.1% |
 | F1-Score | 95.4% |
 
-## Explainable AI (XAI)
+## 🔍 Explainable AI (XAI)
 
 O sistema inclui funcionalidades de XAI que permitem:
 
@@ -139,4 +144,7 @@ O sistema inclui funcionalidades de XAI que permitem:
 - **Análise de Confiança**: Fornece scores de confiança para cada predição
 - **Relatórios Interpretativos**: Gera explicações em linguagem natural
 
+## 🔗 Projetos Relacionados
 
+- [detectaBB_backend](https://github.com/Matheuscroft/detectaBB_backend) - Backend do sistema de detecção de boletos
+- [machine_learning_detecta_boletos](https://github.com/Daniel-Tavares-de-Lima/machine_learing_detecta_boletos) - Implementação dos modelos de Machine Learning

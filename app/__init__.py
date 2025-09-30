@@ -14,7 +14,6 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///detecta_boletos.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
-    # CORS mais específico
     CORS(app, 
          resources={r"/*": {
              "origins": ["http://localhost:8100", "http://localhost:3000"],
@@ -26,23 +25,26 @@ def create_app():
     
     @app.route('/')
     def home():
-        return {
-            "message": "API Detecta Boletos funcionando!",
-            "status": "online"
-        }
+        return {"message": "API Detecta Boletos funcionando!", "status": "online"}
     
     @app.route('/health')
     def health():
         return {"status": "healthy"}
     
-    # Registrar blueprint simples para teste
+    # Registrar auth blueprint - ADICIONE ISTO
+    try:
+        from app.routes.auth_routes import auth_bp
+        app.register_blueprint(auth_bp, url_prefix='/api/auth')
+        print("✅ Auth blueprint registrado")
+    except Exception as e:
+        print(f"❌ Erro ao registrar auth blueprint: {e}")
+    
+    # Registrar test blueprint (pode manter ou remover)
     try:
         from app.routes.test_routes import test_bp
         app.register_blueprint(test_bp, url_prefix='/api')
-        print("✅ Blueprint de teste registrado com sucesso")
-    except ImportError as e:
-        print(f"❌ Erro ao importar blueprint: {e}")
+        print("✅ Test blueprint registrado")
     except Exception as e:
-        print(f"❌ Erro geral ao registrar blueprint: {e}")
+        print(f"❌ Erro ao registrar test blueprint: {e}")
     
     return app

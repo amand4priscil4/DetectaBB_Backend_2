@@ -148,3 +148,4 @@ O sistema inclui funcionalidades de XAI que permitem:
 
 - [detectaBB_backend](https://github.com/Matheuscroft/detectaBB_backend) - Backend do sistema de detecção de boletos
 - [machine_learning_detecta_boletos](https://github.com/Daniel-Tavares-de-Lima/machine_learing_detecta_boletos) - Implementação dos modelos de Machine Learning
+- [front_end](https://github.com/licevizzz/detecta-bb-frontend) - Novo frontend do projeto

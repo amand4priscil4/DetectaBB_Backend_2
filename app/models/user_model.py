@@ -13,7 +13,7 @@ class User(db.Model):
     is_active = db.Column(db.Boolean, default=True)
     
     # Relacionamento com análises de boleto
-    analises = db.relationship('AnaliseBoleto', backref='user', lazy=True)
+    analises = db.relationship('AnaliseBoleto', backref='user', lazy='dynamic')
     
     def set_password(self, password):
         """Define a senha do usuário com hash"""

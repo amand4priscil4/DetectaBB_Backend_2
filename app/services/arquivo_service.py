@@ -5,11 +5,11 @@ from PIL import Image
 import pytesseract
 import PyPDF2
 from typing import Dict, Optional, List
+from pdf2image import convert_from_path # <-- MUDANÇA AQUI: Novo import
 
 class ArquivoService:
     def __init__(self):
-        # Configurar caminho do tesseract
-        pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+        # <-- MUDANÇA AQUI: A linha que definia o caminho do Tesseract foi REMOVIDA
         
         self.patterns = {
             'linha_digitavel': [
@@ -28,7 +28,7 @@ class ArquivoService:
     def processar_arquivo(self, arquivo_path: str, tipo_arquivo: str) -> Dict:
         """Processa PDF ou imagem e extrai dados"""
         try:
-            if tipo_arquivo.lower() == 'pdf':
+            if 'pdf' in tipo_arquivo.lower(): # <-- MUDANÇA AQUI: Lógica mais flexível para 'application/pdf'
                 texto_extraido = self._extrair_texto_pdf(arquivo_path)
             else:  # imagem
                 texto_extraido = self._extrair_texto_imagem(arquivo_path)
@@ -50,34 +50,42 @@ class ArquivoService:
                 'erro': str(e)
             }
     
+    # <-- MUDANÇA AQUI: Função de PDF totalmente substituída
     def _extrair_texto_pdf(self, pdf_path: str) -> str:
-        """Extrai texto de PDF"""
+        """Extrai texto de PDF, usando OCR se necessário para PDFs escaneados."""
+        texto_final = ""
         try:
+            # 1. Tenta extrair texto diretamente com PyPDF2
             with open(pdf_path, 'rb') as file:
                 pdf_reader = PyPDF2.PdfReader(file)
-                texto = ""
                 for page in pdf_reader.pages:
-                    texto += page.extract_text() + "\n"
-                
-                # Se o texto extraído for muito pequeno, pode ser PDF escaneado
-                if len(texto.strip()) < 50:
-                    raise Exception("PDF parece ser escaneado, seria necessário OCR avançado")
-                
-                return texto
+                    texto_final += page.extract_text() + "\n"
+            
+            # 2. Se o texto for muito curto, aciona o OCR com Tesseract
+            if len(texto_final.strip()) < 100:
+                texto_ocr = ""
+                # Converte o PDF em uma lista de imagens
+                imagens_pdf = convert_from_path(pdf_path)
+                for imagem in imagens_pdf:
+                    # Aplica o OCR em cada página/imagem
+                    texto_ocr += pytesseract.image_to_string(imagem, lang='por') + "\n"
+                texto_final = texto_ocr
+
+            if not texto_final.strip():
+                 raise Exception("Não foi possível extrair texto do PDF, mesmo com OCR.")
+
+            return texto_final
         except Exception as e:
             raise Exception(f"Erro ao processar PDF: {str(e)}")
-    
+
     def _extrair_texto_imagem(self, imagem_path: str) -> str:
         """OCR em imagem"""
         try:
-            # Abrir imagem
             image = Image.open(imagem_path)
             
-            # Converter para RGB se necessário
             if image.mode != 'RGB':
                 image = image.convert('RGB')
             
-            # Aplicar OCR
             texto = pytesseract.image_to_string(image, lang='por')
             
             return texto
@@ -89,23 +97,19 @@ class ArquivoService:
         dados = {}
         texto_limpo = texto.lower().replace('\n', ' ').replace('\r', ' ')
         
-        # Extrair linha digitável
         linha = self._extrair_com_patterns(texto, self.patterns['linha_digitavel'])
         if linha:
-            dados['linha_digitavel'] = re.sub(r'[^\d]', '', linha)  # Apenas números
+            dados['linha_digitavel'] = re.sub(r'[^\d]', '', linha)
             if len(dados['linha_digitavel']) >= 3:
                 dados['codigo_banco'] = int(dados['linha_digitavel'][:3])
         
-        # Extrair valor
         valor_str = self._extrair_com_patterns(texto, self.patterns['valor'])
         if valor_str:
             dados['valor'] = self._converter_valor(valor_str)
         
-        # Extrair banco
         banco = self._extrair_banco(texto_limpo)
         dados['banco'] = banco if banco else 'Banco não identificado'
         
-        # Valores padrão
         dados.setdefault('agencia', 1)
         dados.setdefault('codigo_banco', 1)
         dados.setdefault('valor', 0.0)
@@ -117,13 +121,18 @@ class ArquivoService:
         for pattern in patterns:
             match = re.search(pattern, texto, re.IGNORECASE)
             if match:
-                return match.group(1)
+                # Se o padrão tiver grupos de captura, retorna o primeiro, senão, o match completo
+                return match.group(1) if match.groups() else match.group(0)
         return None
     
     def _converter_valor(self, valor_str: str) -> float:
         """Converte string de valor para float"""
         try:
+            # Remove tudo que não for dígito, vírgula ou ponto
             valor_limpo = re.sub(r'[^\d,.]', '', valor_str)
+            # Lida com casos como '1.234,56'
+            if '.' in valor_limpo and ',' in valor_limpo:
+                valor_limpo = valor_limpo.replace('.', '')
             valor_limpo = valor_limpo.replace(',', '.')
             return float(valor_limpo)
         except:
@@ -133,8 +142,7 @@ class ArquivoService:
         """Identifica o banco"""
         bancos = {
             'banco do brasil': 'Banco do Brasil',
-            'itau': 'Itaú',
-            'itaú': 'Itaú', 
+            'itau': 'Itaú', 'itaú': 'Itaú', 
             'bradesco': 'Bradesco',
             'santander': 'Santander',
             'caixa': 'Caixa Econômica',
@@ -154,7 +162,7 @@ class ArquivoService:
         if not dados.get('linha_digitavel'):
             erros.append("Linha digitável não encontrada")
         elif len(dados['linha_digitavel']) not in [47, 48]:
-            warnings.append("Linha digitável com tamanho suspeito")
+            warnings.append(f"Linha digitável com tamanho suspeito: {len(dados['linha_digitavel'])} dígitos")
         
         if dados.get('valor', 0) <= 0:
             warnings.append("Valor não encontrado ou inválido")

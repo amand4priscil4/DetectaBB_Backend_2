@@ -14,8 +14,15 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///detecta_boletos.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
-    # ✅ CORS SIMPLES - uma linha só
-    CORS(app)
+    # --- CONFIGURAÇÃO FINAL DO CORS ---
+    # Lista de URLs (origens) que podem fazer requisições para sua API
+    origins = [
+        "https://detecta-bb-frontend-main.vercel.app", # deploy na Vercel
+        "http://localhost:8100"                        # desenvolvimento local do Ionic
+    ]
+    # Aplica as regras de CORS apenas para as rotas /api/*
+    CORS(app, resources={r"/api/*": {"origins": origins}})
+    # ------------------------------------
     
     db.init_app(app)
     

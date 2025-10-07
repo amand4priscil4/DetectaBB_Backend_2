@@ -1,8 +1,8 @@
-import os
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
 db = SQLAlchemy()
@@ -14,13 +14,16 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///detecta_boletos.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
-    CORS(app, 
-         resources={r"/*": {
-             "origins": "*",  # ← Muda aqui
-             "allow_headers": ["Content-Type", "Authorization"],
-             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-             "supports_credentials": True
-         }})
+    # CORS - aceita tudo temporariamente
+    CORS(app)
+    
+    # Handler para OPTIONS (preflight)
+    @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+        return response
     
     db.init_app(app)
     
@@ -32,7 +35,7 @@ def create_app():
     def health():
         return {"status": "healthy"}
     
-    # Registrar auth blueprint - ADICIONE ISTO
+    # Registrar blueprints
     try:
         from app.routes.auth_routes import auth_bp
         app.register_blueprint(auth_bp, url_prefix='/api/auth')
@@ -40,7 +43,13 @@ def create_app():
     except Exception as e:
         print(f"❌ Erro ao registrar auth blueprint: {e}")
     
-    # Registrar test blueprint (pode manter ou remover)
+    try:
+        from app.routes.boleto_routes import boleto_bp
+        app.register_blueprint(boleto_bp, url_prefix='/api')
+        print("✅ Boleto blueprint registrado")
+    except Exception as e:
+        print(f"❌ Erro ao registrar boleto blueprint: {e}")
+    
     try:
         from app.routes.test_routes import test_bp
         app.register_blueprint(test_bp, url_prefix='/api')

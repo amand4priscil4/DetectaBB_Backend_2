@@ -16,9 +16,10 @@ def create_app():
     
     CORS(app, 
          resources={r"/*": {
-             "origins": ["http://localhost:8100", "http://localhost:3000"],
+             "origins": "*",  # ← Muda aqui
              "allow_headers": ["Content-Type", "Authorization"],
-             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+             "supports_credentials": True
          }})
     
     db.init_app(app)

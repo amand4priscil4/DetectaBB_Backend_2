@@ -48,16 +48,5 @@ def create_app():
         print("✅ Upload blueprint registrado")
     except Exception as e:
         print(f"❌ Erro ao registrar upload blueprint: {e}")
-
-        # ⚠️ ENDPOINT TEMPORÁRIO - REMOVER DEPOIS!
-    @app.route('/secret-reset-db-12345', methods=['POST'])
-    def reset_database():
-        """CUIDADO: Apaga e recria o banco!"""
-        try:
-            db.drop_all()
-            db.create_all()
-            return {"message": "✅ Banco resetado com sucesso!"}, 200
-        except Exception as e:
-            return {"error": str(e)}, 500
     
     return app

@@ -27,6 +27,7 @@ PyPDF2>=3.0.0
 # Utilitários
 werkzeug>=3.0.0
 bcrypt>=4.0.0
+PyJWT>=2.8.0
 
 # Para PDF (reportlab usado nos testes)
 reportlab>=4.0.0

@@ -19,5 +19,13 @@ shap>=0.44.0
 # Banco de dados
 psycopg2-binary>=2.9.0
 
+# OCR e processamento de imagens
+pytesseract>=0.3.10
+Pillow>=10.0.0
+PyPDF2>=3.0.0
+
 # Utilitários
 werkzeug>=3.0.0
+
+# Para PDF (reportlab usado nos testes)
+reportlab>=4.0.0

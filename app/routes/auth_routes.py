@@ -172,6 +172,19 @@ def login():
         return jsonify({'error': f'Erro no login: {str(e)}'}), 500
 
 
+@auth_bp.route('/users', methods=['GET'])
+def listar_usuarios():
+    """Lista todos os usuários cadastrados"""
+    try:
+        usuarios = User.query.all()
+        return jsonify({
+            'total': len(usuarios),
+            'usuarios': [u.to_dict() for u in usuarios]
+        }), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 # ============ ROTAS PROTEGIDAS ============
 
 @auth_bp.route('/me', methods=['GET'])
@@ -239,6 +252,7 @@ def test():
             'public': [
                 'POST /api/auth/register',
                 'POST /api/auth/login',
+                'GET /api/auth/users',
                 'GET /api/auth/test'
             ],
             'protected': [

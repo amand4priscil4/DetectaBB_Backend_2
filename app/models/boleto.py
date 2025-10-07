@@ -6,13 +6,13 @@ class AnaliseBoleto(db.Model):
     __tablename__ = 'analises_boleto'
     
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)  # NOVA LINHA
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     
-    # Dados de entrada
+    # ⬇️ Dados de entrada (NOMES ATUALIZADOS)
     banco = db.Column(db.Float, nullable=False)
     codigo_banco = db.Column(db.Integer, nullable=False)
-    agencia = db.Column(db.Integer, nullable=False)
-    valor = db.Column(db.Float, nullable=False)
+    agencia = db.Column(db.Integer, nullable=False)  # ⬅️ SEM "Banco"
+    valor = db.Column(db.Float, nullable=False)      # ⬅️ SEM "Documento"
     linha_digitavel = db.Column(db.String(50), nullable=False)
     
     # Features extraídas
@@ -32,12 +32,12 @@ class AnaliseBoleto(db.Model):
     def to_dict(self):
         return {
             'id': self.id,
-            'user_id': self.user_id,  # NOVA LINHA
+            'user_id': self.user_id,
             'dados_entrada': {
                 'banco': self.banco,
                 'codigo_banco': self.codigo_banco,
-                'agencia': self.agencia,
-                'valor': self.valor,
+                'agencia': self.agencia,        # ⬅️ NOME ATUALIZADO
+                'valor': self.valor,            # ⬅️ NOME ATUALIZADO
                 'linha_digitavel': self.linha_digitavel
             },
             'resultado': {

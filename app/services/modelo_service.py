@@ -16,7 +16,7 @@ class ModeloService:
             'Banco Digio S.A.': 5,
             'CM CAPITAL MARKETS CORRETORA DE CÂMBIO, TÍTULOS E VALORES MOBILIÁRIOS LTDA': 6,
             'Banco Clássico S.A.': 7,
-            'Crediliança Cooperativa de Crédito Rural': 8,
+            'Credialança Cooperativa de Crédito Rural': 8,
             'CREDICOAMO CREDITO RURAL COOPERATIVA': 9,
             'OLIVEIRA TRUST DISTRIBUIDORA DE TÍTULOS E VALORES MOBILIARIOS S.A.': 10,
             'Pagseguro Internet S.A. – PagBank': 11,
@@ -81,12 +81,12 @@ class ModeloService:
             # Extrair features da linha digitável
             features_linha = self.extrair_features_linha_digitavel(dados_boleto['linha_digitavel'])
             
-            # Preparar features exatamente como no treinamento
+            # ⬇️ NOVOS NOMES: agencia (sem Banco), valor (sem Documento)
             features = {
                 'banco': self.mapear_banco(dados_boleto['banco']),
                 'codigoBanco': float(dados_boleto['codigo_banco']),
-                'agencia': float(dados_boleto['agencia']),
-                'valor': float(dados_boleto['valor']),
+                'agencia': float(dados_boleto.get('agencia', 0)),  # ⬅️ MUDOU
+                'valor': float(dados_boleto.get('valor', 0.0)),    # ⬅️ MUDOU
                 'linha_codBanco': float(features_linha['linha_cod_banco']),
                 'linha_moeda': float(features_linha['linha_moeda']),
                 'linha_valor': float(features_linha['linha_valor'])
@@ -94,7 +94,7 @@ class ModeloService:
             
             print(f"Features preparadas: {features}")
             
-            # Criar DataFrame com as features na ordem correta
+            # ⬇️ ORDEM EXATA do notebook de treinamento
             feature_names = ['banco', 'codigoBanco', 'agencia', 'valor', 
                            'linha_codBanco', 'linha_moeda', 'linha_valor']
             

@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
@@ -14,16 +14,8 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///detecta_boletos.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
-    # CORS - aceita tudo temporariamente
+    # ✅ CORS SIMPLES - uma linha só
     CORS(app)
-    
-    # Handler para OPTIONS (preflight)
-    @app.after_request
-    def after_request(response):
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-        return response
     
     db.init_app(app)
     
@@ -51,10 +43,21 @@ def create_app():
         print(f"❌ Erro ao registrar boleto blueprint: {e}")
     
     try:
-        from app.routes.test_routes import test_bp
-        app.register_blueprint(test_bp, url_prefix='/api')
-        print("✅ Test blueprint registrado")
+        from app.routes.upload_routes import upload_bp
+        app.register_blueprint(upload_bp, url_prefix='/api/upload')
+        print("✅ Upload blueprint registrado")
     except Exception as e:
-        print(f"❌ Erro ao registrar test blueprint: {e}")
+        print(f"❌ Erro ao registrar upload blueprint: {e}")
+
+        # ⚠️ ENDPOINT TEMPORÁRIO - REMOVER DEPOIS!
+    @app.route('/secret-reset-db-12345', methods=['POST'])
+    def reset_database():
+        """CUIDADO: Apaga e recria o banco!"""
+        try:
+            db.drop_all()
+            db.create_all()
+            return {"message": "✅ Banco resetado com sucesso!"}, 200
+        except Exception as e:
+            return {"error": str(e)}, 500
     
     return app

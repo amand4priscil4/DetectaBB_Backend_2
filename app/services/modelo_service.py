@@ -121,7 +121,14 @@ class ModeloService:
     def gerar_explicacao_shap(self, df_features: pd.DataFrame, predicao: int, features_originais: Dict) -> Dict:
         try:
             shap_values = self.explainer.shap_values(df_features)
-            shap_values_for_explanation = shap_values[1][0]
+            # Para classificacao binaria, shap_values pode ser uma lista de arrays.
+            # Se o modelo retorna SHAP values para ambas as classes, pegamos a da classe positiva (indice 1).
+            # Se retorna apenas para uma classe (e.g., a positiva), entao shap_values ja e o array.
+            if isinstance(shap_values, list) and len(shap_values) > 1:
+                shap_values_for_explanation = shap_values[1][0]
+            else:
+                # Assume que shap_values ja e o array para a classe positiva
+                shap_values_for_explanation = shap_values[0]
             
             shap_map = {name: value for name, value in zip(df_features.columns, shap_values_for_explanation)}
             sorted_shap_features = sorted(shap_map.items(), key=lambda item: abs(item[1]), reverse=True)
@@ -139,7 +146,7 @@ class ModeloService:
                     feature_display_name = fname.replace('_', ' ').capitalize()
                     direction = "negativamente" if v < 0 else "positivamente"
                     impact_word = "aumentando a suspeita" if v < 0 else "reforcando a autenticidade"
-                    msgs.append(f"O campo '{feature_display_name}' influenciou {direction} a deciso, {impact_word}.")
+                    msgs.append(f"O campo '{feature_display_name}' influenciou {direction} a decisao, {impact_word}.")
 
             status_text = "VERDADEIRO " if predicao == 1 else "FALSO "
             if not msgs:

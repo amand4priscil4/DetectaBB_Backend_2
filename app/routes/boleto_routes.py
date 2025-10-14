@@ -72,7 +72,7 @@ def analisar_boleto():
         db.session.add(analise)
         db.session.commit()
         
-        # Retornar resultado
+       # Retornar resultado com explicação SHAP
         resposta = {
             'id': analise.id,
             'user_id': user_id,
@@ -86,6 +86,7 @@ def analisar_boleto():
                 'confianca': resultado_predicao['confianca']
             },
             'features_extraidas': features_extraidas,
+            'explicacao': resultado_predicao.get('explicacao_shap', {}), # Adicionado
             'timestamp': analise.created_at.isoformat()
         }
         

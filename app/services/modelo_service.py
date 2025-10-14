@@ -6,7 +6,7 @@ import shap
 from typing import Dict
 
 class MockModel:
-    """Modelo mock para testes quando o modelo real não está disponível"""
+    """Modelo mock para testes quando o modelo real no est disponvel"""
     def predict(self, X):
         return np.array([1])
     
@@ -18,23 +18,23 @@ class ModeloService:
         self.modelo = None
         self.mapeamento_bancos = {
             'Banco do Brasil': 0,
-            'Itaú': 1,
+            'Ita': 1,
             'Bradesco': 2,
             'Santander': 3,
-            'Caixa Econômica': 4,
+            'Caixa Economica': 4,
             'Banco Digio S.A.': 5,
-            'CM CAPITAL MARKETS CORRETORA DE CÂMBIO, TÍTULOS E VALORES MOBILIÁRIOS LTDA': 6,
-            'Banco Clássico S.A.': 7,
-            'Credialiança Cooperativa de Crédito Rural': 8,
+            'CM CAPITAL MARKETS CORRETORA DE CMBIO, TTULOS E VALORES MOBILIRIOS LTDA': 6,
+            'Banco Clssico S.A.': 7,
+            'Credialana Cooperativa de Crdito Rural': 8,
             'CREDICOAMO CREDITO RURAL COOPERATIVA': 9,
-            'OLIVEIRA TRUST DISTRIBUIDORA DE TÍTULOS E VALORES MOBILIARIOS S.A.': 10,
-            'Pagseguro Internet S.A. - PagBank': 11,
-            'NU Pagamentos S.A. - Nubank': 12,
-            'ATIVA INVESTIMENTOS S.A. CORRETORA DE TÍTULOS, CÂMBIO E VALORES': 13,
+            'OLIVEIRA TRUST DISTRIBUIDORA DE TTULOS E VALORES MOBILIARIOS S.A.': 10,
+            'Pagseguro Internet S.A.  PagBank': 11,
+            'NU Pagamentos S.A.  Nubank': 12,
+            'ATIVA INVESTIMENTOS S.A. CORRETORA DE TTULOS, CMBIO E VALORES': 13,
             'Banco Inbursa S.A.': 14,
-            'SOROCRED CRÉDITO, FINANCIAMENTO E INVESTIMENTO S.A.': 15,
+            'SOROCRED CRDITO, FINANCIAMENTO E INVESTIMENTO S.A.': 15,
             'Banco Finaxis S.A.': 16,
-            'SOCRED S.A. - SOCIEDADE DE CRÉDITO AO MICROEMPREENDEDOR E À EMPRESA DE PEQUENO P': 17
+            'SOCRED S.A.  SOCIEDADE DE CRDITO AO MICROEMPREENDEDOR E  EMPRESA DE PEQUENO P': 17
         }
         self.explainer = None
         self.carregar_modelo()
@@ -49,7 +49,7 @@ class ModeloService:
                 print(f"Erro ao inicializar SHAP TreeExplainer: {e}")
                 self.explainer = None
         else:
-            print("Modelo nao e do tipo suportado para SHAP TreeExplainer ou e um MockModel, explainer nao inicializado.")
+            print("Modelo no  do tipo suportado para SHAP TreeExplainer ou  um MockModel, explainer no inicializado.")
 
     def carregar_modelo(self):
         try:
@@ -60,7 +60,7 @@ class ModeloService:
                     self.modelo = pickle.load(f)
                 print(f"Modelo carregado com sucesso: {model_path}")
             else:
-                print(f"Modelo nao encontrado: {model_path}")
+                print(f"Modelo no encontrado: {model_path}")
                 self.modelo = MockModel()
         except Exception as e:
             print(f"Erro ao carregar modelo: {e}")
@@ -81,7 +81,7 @@ class ModeloService:
         for banco, indice in self.mapeamento_bancos.items():
             if nome_lower in banco.lower() or banco.lower() in nome_lower:
                 return float(indice)
-        print(f"Banco nao mapeado: {nome_banco}")
+        print(f"Banco no mapeado: {nome_banco}")
         return 0.0
 
     def fazer_predicao(self, dados_boleto: Dict) -> Dict:
@@ -106,7 +106,7 @@ class ModeloService:
             resultado = "Verdadeiro" if predicao == 1 else "Falso"
             confianca = max(float(probabilidades[0]), float(probabilidades[1]))
 
-            explicacao = self.gerar_explicacao_shap(df_features, predicao, features) if self.explainer else {"explicacao_texto": "Explicacao nao disponivel."}
+            explicacao = self.gerar_explicacao_shap(df_features, predicao, features) if self.explainer else {"explicacao_texto": "Explicao no disponvel."}
 
             return {
                 'resultado': resultado,
@@ -128,24 +128,24 @@ class ModeloService:
             
             msgs = []
             if int(features_originais.get("codigoBanco")) != int(features_originais.get("linha_codBanco")):
-                msgs.append("O codigo do banco na linha digitavel nao confere com o codigo informado.")
+                msgs.append("O cdigo do banco na linha digitvel no confere com o cdigo informado.")
             if int(features_originais.get("linha_moeda")) != 9:
-                msgs.append("O digito de moeda na linha digitavel esta diferente do esperado (deveria ser 9).")
+                msgs.append("O dgito de moeda na linha digitvel est diferente do esperado (deveria ser 9).")
             if abs(float(features_originais.get("valor")) * 100 - float(features_originais.get("linha_valor"))) > 0.01:
-                msgs.append("O valor na linha digitavel nao confere com o valor informado.")
+                msgs.append("O valor na linha digitvel no confere com o valor informado.")
 
             for fname, v in sorted_shap_features:
                 if abs(v) > 0.05:
                     feature_display_name = fname.replace('_', ' ').capitalize()
                     direction = "negativamente" if v < 0 else "positivamente"
                     impact_word = "aumentando a suspeita" if v < 0 else "reforcando a autenticidade"
-                    msgs.append(f"O campo '{feature_display_name}' influenciou {direction} a decisao, {impact_word}.")
+                    msgs.append(f"O campo '{feature_display_name}' influenciou {direction} a deciso, {impact_word}.")
 
             status_text = "VERDADEIRO " if predicao == 1 else "FALSO "
             if not msgs:
-                texto_usuario = f"Resultado da analise: {status_text}. Nenhuma inconsistencia clara foi detectada."
+                texto_usuario = f"Resultado da anlise: {status_text}. Nenhuma inconsistencia clara foi detectada."
             else:
-                texto_usuario = f"Resultado da analise: {status_text}.\n\nPrincipais motivos detectados:\n- " + "\n- ".join(msgs)
+                texto_usuario = f"Resultado da anlise: {status_text}.\n\nPrincipais motivos detectados:\n- " + "\n- ".join(msgs)
 
             return {
                 "explicacao_texto": texto_usuario
